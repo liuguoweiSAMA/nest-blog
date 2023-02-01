@@ -17,7 +17,7 @@ export class CategoryService {
   }
 
   findOne(id: number) {
-    return this.prisma.category.findUnique({
+    return this.prisma.category.findFirst({
       where: {
         id,
       },
@@ -25,6 +25,7 @@ export class CategoryService {
   }
 
   update(id: number, updateCategoryDto: UpdateCategoryDto) {
+    console.log(id, updateCategoryDto)
     return this.prisma.category.update({
       where: {
         id,

@@ -6,12 +6,13 @@ import { UpdateArticleDto } from './dto/update-article.dto'
 
 @Injectable()
 export class ArticleService {
-  constructor(private prisma: PrismaService, private config: ConfigService) {}
+  constructor(private prisma: PrismaService, private config: ConfigService) { }
   async create(createArticleDto: CreateArticleDto) {
     const article = await this.prisma.article.create({
       data: {
         title: createArticleDto.title,
         content: createArticleDto.content,
+        categoryId: createArticleDto.categoryId,
       },
     })
     return article
@@ -47,7 +48,7 @@ export class ArticleService {
       where: {
         id,
       },
-      data: updateArticleDto,
+      data: { ...updateArticleDto, categoryId: updateArticleDto.categoryId },
     })
   }
 
