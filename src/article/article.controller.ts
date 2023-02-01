@@ -1,5 +1,6 @@
 // import { Query } from '@nestjs/common'
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common'
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common'
+import { AuthGuard } from '@nestjs/passport'
 import { ArticleService } from './article.service'
 import { CreateArticleDto } from './dto/create-article.dto'
 import { UpdateArticleDto } from './dto/update-article.dto'
@@ -9,6 +10,7 @@ export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
 
   @Post()
+  @UseGuards(AuthGuard('jwt'))
   create(@Body() createArticleDto: CreateArticleDto) {
     return this.articleService.create(createArticleDto)
   }

@@ -9,6 +9,7 @@ async function run() {
     data: {
       name: 'admin',
       password: await hash('admin'),
+      role: 'admin'
     },
   })
   for (let i = 0; i < 6; i++) {

@@ -12,7 +12,7 @@ export class ArticleService {
       data: {
         title: createArticleDto.title,
         content: createArticleDto.content,
-        categoryId: createArticleDto.categoryId,
+        categoryId: +createArticleDto.categoryId,
       },
     })
     return article
