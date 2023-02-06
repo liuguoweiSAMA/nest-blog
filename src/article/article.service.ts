@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { CreateArticleDto } from './dto/create-article.dto'
 import { UpdateArticleDto } from './dto/update-article.dto'
+import { Category } from '../category/entities/category.entity'
 
 @Injectable()
 export class ArticleService {
@@ -20,18 +21,29 @@ export class ArticleService {
     return article
   }
 
-  async findAll(page = 1) {
+  async findAll(args: Record<string, any>) {
     // 获取config 环境变量的值
     const row = this.config.get('ARTICLE_PAGE_ROW')
+    const page = args.page ? +args.page : 1
     const article = await this.prisma.article.findMany({
       skip: (page - 1) * row,
       take: +row,
+      where: {
+        category: args.category ? { id: +args.category } : {},
+      },
+      include: {
+        category: true,
+      },
     })
-    const total = await this.prisma.article.count()
+    const total = await this.prisma.article.count({
+      where: {
+        category: args.category ? { id: +args.category } : {},
+      },
+    })
     return {
       meta: {
         current_page: page,
-        page_row: row,
+        page_row: +row,
         total,
         total_page: Math.ceil(total / row),
       },

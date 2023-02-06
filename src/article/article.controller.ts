@@ -1,13 +1,27 @@
 // import { Query } from '@nestjs/common'
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common'
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Req,
+  Query,
+  DefaultValuePipe,
+} from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ArticleService } from './article.service'
 import { CreateArticleDto } from './dto/create-article.dto'
 import { UpdateArticleDto } from './dto/update-article.dto'
+import { article } from '@prisma/client'
+import { Article } from './entities/article.entity'
 
 @Controller('article')
 export class ArticleController {
-  constructor(private readonly articleService: ArticleService) {}
+  constructor(private readonly articleService: ArticleService) { }
 
   @Post()
   @UseGuards(AuthGuard('jwt'))
@@ -16,13 +30,14 @@ export class ArticleController {
   }
 
   @Get()
-  findAll(@Param('page') page: string) {
-    return this.articleService.findAll()
+  findAll(@Query() args: Record<string, any>) {
+    return this.articleService.findAll(args)
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.articleService.findOne(+id)
+  async findOne(@Param('id') id: string) {
+    const article = await this.articleService.findOne(+id)
+    return new Article(article)
   }
 
   @Patch(':id')
